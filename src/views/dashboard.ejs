@@ -1,0 +1,43 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">Blogging App</a>
+    <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link <%= metaData.url === '/dashboard' ? 'active' : '' %>" href="/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/blogs">Blogs</a>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center">
+        <span class="me-3"><%= user.email %></span>
+        <img
+        src="/uploads/<%= user.profile_image %>"
+          class="rounded-circle"
+          height="40"
+          alt="User Avatar"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- User List Section -->
+<div class="container text-center shadow-lg p-4 bg-white rounded mt-5" style="width: 50%;">
+  <div class="card-title mb-3">
+    <h5 class="fw-bold"><i class="fa fa-user me-2"></i>User Details</h5>
+  </div>
+
+  <div class="card-body">
+    <img src="/uploads/<%= user.profile_image %>" class="img-thumbnail rounded"/>
+    <h5 class="card-title mt-4">Email: <%= user.email %></h5>
+  </div>
+</div>

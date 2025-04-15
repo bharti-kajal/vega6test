@@ -1,0 +1,228 @@
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">Blogging App</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link <%= metaData.url === '/dashboard' ? 'active' : '' %>" href="/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link <%= metaData.url === '/blogs' ? 'active' : '' %>" href="/blogs">Blogs</a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center gap-2 text-white">
+        <span><%= user.email %></span>
+        <img src="/uploads/<%= user.profile_image %>" class="rounded-circle" height="40" width="40" alt="User Avatar">
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Blog List Section -->
+<div class="container shadow-lg p-4 bg-white rounded mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold"><i class="fa fa-list me-2"></i>Blog List</h5>
+    <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">
+      <i class="fa fa-plus me-1"></i> Add Blog
+    </a>
+  </div>
+
+  <% if (flash.success && flash.success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= flash.success %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <% if (flash.error && flash.error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <%= flash.error %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle text-center" id="example1">
+      <thead class="table-primary">
+        <tr>
+          <th class="p-3">Blog Title</th>
+          <th class="p-3">Blog Image</th>
+          <th class="p-3" width="50%">Blog Description</th>
+          <th class="p-3">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% blogs.forEach(function(blog) { %>
+        <tr>
+          <td class="text-start"><%= blog.title.split(' ').slice(0, 70).join(' ') %></td>
+          <td>
+            <img src="/uploads/<%= blog.blog_image %>" height="50" style="object-fit: cover;">
+          </td>
+          <td class="text-start">
+            <%= blog.description.split(' ').length > 20 
+              ? blog.description.split(' ').slice(0, 20).join(' ') + '...'
+              : blog.description %>
+          </td>
+          <td>
+            <a class="btn btn-info btn-sm text-white view-blog-btn" data-id="<%= blog._id %>">Full Blog Content</a>
+            <a class="btn btn-success btn-sm edit-blog-btn" data-id="<%= blog._id %>"><i class="fa fa-pencil"></i></a>
+            <a class="btn btn-danger btn-sm delete-blog-btn" data-id="<%= blog._id %>"><i class="fa fa-trash"></i></a>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add Blog Modal -->
+<div class="modal fade" id="exampleModalToggle" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="post" enctype="multipart/form-data" action="/add-blog">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Blog</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label">Blog Title</label>
+            <input type="text" class="form-control" name="title" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Blog Image</label>
+            <input type="file" class="form-control" name="blogImage" accept="image/*" required>
+            <small class="text-danger">Accept image only.</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Blog Description</label>
+            <textarea class="form-control" rows="3" name="description"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Blog Modal -->
+<div class="modal fade" id="editBlog" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form action="/edit-blog" method="post" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Blog</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <input type="hidden" id="editBlogId" name="blogId">
+          <div class="mb-3">
+            <label class="form-label">Blog Title</label>
+            <input type="text" class="form-control" id="editTitle" name="title">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Blog Image</label>
+            <img id="editImagePreview" src="" width="150" class="mb-2 d-block">
+            <input class="form-control" type="file" id="editImageFile" name="blogImage">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Blog Description</label>
+            <textarea class="form-control" id="editDescription" rows="3" name="description"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Update</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Blog Modal -->
+<div class="modal fade" id="deleteBlog" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form action="/delete-blog" method="post">
+        <input type="hidden" id="blogId" name="blogId">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Blog</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <h4>Are you sure?</h4>
+          <p>You won't be able to revert this Blog!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Yes, delete it!</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- View Blog Modal -->
+<div class="modal fade" id="viewContent" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="modal-title"></h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-content"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  $(document).on('click', '.view-blog-btn', function () {
+    const blogId = $(this).data('id');
+    $.get(`/blogs/${blogId}`, function (data) {
+      $('#modal-title').text(data.title);
+      $('#modal-content').text(data.content);
+      $('#viewContent').modal('show');
+    }).fail(function () {
+      $('#modal-title').text("Error");
+      $('#modal-content').text("Failed to fetch blog data.");
+      $('#viewContent').modal('show');
+    });
+  });
+
+  $(document).on('click', '.delete-blog-btn', function () {
+    const blogId = $(this).data('id');
+    $.get(`/blogs/${blogId}`, function (data) {
+      $('#blogId').val(data.id);
+      $('#deleteBlog').modal('show');
+    }).fail(function () {
+      $('#deleteBlog').modal('show');
+    });
+  });
+
+  $(document).on('click', '.edit-blog-btn', function () {
+    const blogId = $(this).data('id');
+    $.get(`/blogs/${blogId}`, function (data) {
+      $('#editBlogId').val(data.id);
+      $('#editTitle').val(data.title);
+      $('#editDescription').val(data.content);
+      $('#editImagePreview').attr('src', '/uploads/' + data.blog_image);
+      $('#editBlog').modal('show');
+    }).fail(function () {
+      alert('Failed to fetch blog data.');
+    });
+  });
+</script>

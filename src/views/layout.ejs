@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= metaData.title %> :: Blogging App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      .nav-link.active {
+        color: orange !important;
+        border-bottom: 2px solid orange; 
+        font-weight: bold;
+      }
+      .nav-link:hover {
+        color: orange !important;
+        font-weight: bold;
+      }
+      a{
+        text-decoration: none !important;
+      }
+
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-image: linear-gradient(70deg, #5e51eb, #4f44bd);
+        color: white !important;
+        padding: 1rem 2rem;
+        z-index: 1000;
+      }
+
+      .navbar-brand,
+      .nav-link,
+      .navbar-text {
+        color: white !important;
+      }
+
+      .navbar-nav .nav-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+<%- body %>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
